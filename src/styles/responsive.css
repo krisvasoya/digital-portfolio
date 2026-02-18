@@ -1,0 +1,27 @@
+/* Mobile Responsiveness */
+@media (max-width: 1024px) {
+  .main-layout-grid {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto auto 1fr auto auto !important;
+    padding: 1rem !important;
+    overflow-y: auto !important;
+  }
+  
+  /* Reset grid areas for mobile stack */
+  .layout-header { grid-column: 1 / -1 !important; }
+  .layout-nav { grid-column: 1 / -1 !important; }
+  .layout-main { grid-column: 1 / -1 !important; height: 50vh !important; } /* Give space for 3D bg */
+  .layout-aside { display: none !important; } /* Hide extra stats on mobile to save space, or move them */
+  .layout-footer { grid-column: 1 / -1 !important; }
+}
+
+@media (max-width: 768px) {
+  .layout-main {
+    height: auto !important;
+    min-height: 300px;
+  }
+  
+  .glass-panel {
+    backdrop-filter: blur(8px); /* Reduce blur for performance on mobile */
+  }
+}
