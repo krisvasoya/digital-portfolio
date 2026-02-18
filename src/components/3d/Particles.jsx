@@ -9,10 +9,20 @@ const Particles = (props) => {
   const [sphere] = useState(() => random.inSphere(new Float32Array(5000), { radius: 20 }))
 
   useFrame((state, delta) => {
-    if (ref.current) {
-      ref.current.rotation.x -= delta / 10
-      ref.current.rotation.y -= delta / 15
-    }
+    ref.current.rotation.x -= delta / 10
+    ref.current.rotation.y -= delta / 15
+
+    // Mouse interaction
+    // const time = state.clock.getElapsedTime()
+    // const mouseX = state.mouse.x * 2 // Expand mouse range
+    // const mouseY = state.mouse.y * 2
+    
+    // We can add subtle wave motion or reaction here if we expanded the points to be individual meshes, 
+    // but for simple Points material, rotation is the most performant way to "move" the field.
+    // To make it more interactive, we'll lerp the rotation based on mouse position
+    
+    ref.current.rotation.x = state.mouse.y * 0.2
+    ref.current.rotation.y = state.mouse.x * 0.2
   })
 
   return (

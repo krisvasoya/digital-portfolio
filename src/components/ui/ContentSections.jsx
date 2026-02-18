@@ -1,5 +1,22 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { motion } from 'framer-motion'
+
+const Typewriter = ({ text, delay = 50 }) => {
+  const [currentText, setCurrentText] = useState('');
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  React.useEffect(() => {
+    if (currentIndex < text.length) {
+      const timeout = setTimeout(() => {
+        setCurrentText(prev => prev + text[currentIndex]);
+        setCurrentIndex(prev => prev + 1);
+      }, delay);
+      return () => clearTimeout(timeout);
+    }
+  }, [currentIndex, delay, text]);
+
+  return <span>{currentText}</span>;
+};
 
 export const Projects = () => (
   <motion.div 
@@ -30,11 +47,13 @@ export const Projects = () => (
             hidden: { y: 20, opacity: 0 },
             visible: { y: 0, opacity: 1 }
           }}
-          whileHover={{ scale: 1.02, borderColor: '#00f3ff' }}
-          style={{ padding: '1rem', border: '1px solid rgba(0,243,255,0.2)', borderRadius: '8px', background: 'rgba(0,0,0,0.2)', cursor: 'pointer', transition: 'border-color 0.3s' }}
+          whileHover={{ scale: 1.02, borderColor: '#00f3ff', boxShadow: '0 0 15px rgba(0, 243, 255, 0.3)' }}
+          style={{ padding: '1rem', border: '1px solid rgba(0,243,255,0.2)', borderRadius: '8px', background: 'rgba(0,0,0,0.2)', cursor: 'pointer', transition: 'all 0.3s ease' }}
         >
           <h3 style={{ color: '#e0e6ed', marginBottom: '0.5rem' }}>{project.name}</h3>
-          <p style={{ color: '#94a3b8', fontSize: '0.9rem' }}>{project.description}</p>
+          <p style={{ color: '#94a3b8', fontSize: '0.9rem', lineHeight: '1.4' }}>
+            {project.id === 1 ? <Typewriter text={project.description} delay={10} /> : project.description}
+          </p>
         </motion.div>
       ))}
     </div>
@@ -125,31 +144,65 @@ export const History = () => (
   </motion.div>
 )
 
-export const Contact = () => (
+export const Contact = () => {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    message: ''
+  });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const subject = `Portfolio Contact from ${formData.name}`;
+    const body = `${formData.message}\n\nFrom: ${formData.name} (${formData.email})`;
+    window.location.href = `mailto:krishvasoy6@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  };
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  return (
     <motion.div 
-    initial={{ opacity: 0, y: 20 }} 
-    animate={{ opacity: 1, y: 0 }} 
-    className="glass-panel" 
-    style={{ height: '100%', overflowY: 'auto' }}
-  >
-    <h2 className="holo-header">Contact Me</h2>
-    <form style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-      <input 
-        type="text" 
-        placeholder="Your Name" 
-        style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid #1e293b', padding: '1rem', color: 'white', outline: 'none' }}
-      />
-      <input 
-        type="email" 
-        placeholder="Your Email" 
-        style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid #1e293b', padding: '1rem', color: 'white', outline: 'none' }}
-      />
-      <textarea 
-        placeholder="Message" 
-        rows={5}
-        style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid #1e293b', padding: '1rem', color: 'white', outline: 'none' }}
-      />
-      <button className="cyber-btn" style={{ width: 'fit-content' }}>Send Message</button>
-    </form>
-  </motion.div>
-)
+      initial={{ opacity: 0, y: 20 }} 
+      animate={{ opacity: 1, y: 0 }} 
+      className="glass-panel" 
+      style={{ height: '100%', overflowY: 'auto' }}
+    >
+      <h2 className="holo-header">Contact Me</h2>
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        <input 
+          type="text" 
+          name="name"
+          placeholder="Your Name" 
+          value={formData.name}
+          onChange={handleChange}
+          required
+          style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid #1e293b', padding: '1rem', color: 'white', outline: 'none' }}
+        />
+        <input 
+          type="email" 
+          name="email"
+          placeholder="Your Email" 
+          value={formData.email}
+          onChange={handleChange}
+          required
+          style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid #1e293b', padding: '1rem', color: 'white', outline: 'none' }}
+        />
+        <textarea 
+          name="message"
+          placeholder="Message" 
+          rows={5}
+          value={formData.message}
+          onChange={handleChange}
+          required
+          style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid #1e293b', padding: '1rem', color: 'white', outline: 'none' }}
+        />
+        <button type="submit" className="cyber-btn" style={{ width: 'fit-content' }}>Send Message</button>
+      </form>
+    </motion.div>
+  );
+}
