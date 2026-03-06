@@ -1,6 +1,22 @@
-import React, { useState, useRef, useEffect } from 'react'
-import { motion } from 'framer-motion'
+import React, { useState, useEffect, useRef } from 'react'
 import { audioSys } from '../../utils/AudioSystem'
+
+const Typewriter = ({ text, delay = 20 }) => {
+  const [currentText, setCurrentText] = useState('');
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    if (currentIndex < text.length) {
+      const timeout = setTimeout(() => {
+        setCurrentText(prev => prev + text[currentIndex]);
+        setCurrentIndex(prev => prev + 1);
+      }, delay);
+      return () => clearTimeout(timeout);
+    }
+  }, [currentIndex, delay, text]);
+
+  return <span>{currentText}</span>;
+};
 
 const Terminal = ({ onNavigate }) => {
   const [history, setHistory] = useState([
@@ -88,28 +104,42 @@ const Terminal = ({ onNavigate }) => {
   }
 
   return (
-    <div style={{ flex: 1, background: 'rgba(0,0,0,0.5)', borderRadius: '8px', padding: '1rem', display: 'flex', flexDirection: 'column', border: '1px solid rgba(0,243,255,0.1)' }}>
+    <div style={{ 
+      flex: 1, 
+      background: 'rgba(0,0,0,0.7)', 
+      borderRadius: '8px', 
+      padding: '1rem', 
+      display: 'flex', 
+      flexDirection: 'column', 
+      border: '1px solid rgba(0,243,255,0.2)',
+      position: 'relative',
+      overflow: 'hidden'
+    }}>
+      {/* CRT Flicker Overlay */}
+      <div style={{
+        position: 'absolute',
+        inset: 0,
+        background: 'linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03))',
+        backgroundSize: '100% 2px, 3px 100%',
+        pointerEvents: 'none',
+        zIndex: 10,
+        opacity: 0.5,
+        animation: 'terminalFlicker 0.15s infinite ease-in-out'
+      }} />
+      
       <h4 className="holo-text" style={{ fontSize: '0.9rem', marginBottom: '0.5rem', borderBottom: '1px solid rgba(0,243,255,0.2)', paddingBottom: '0.5rem' }}>
-        Interactive Terminal
+        Terminal@SI-Core:~$
       </h4>
       
-      <div style={{ flex: 1, overflowY: 'auto', fontFamily: 'monospace', fontSize: '0.8rem', display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: '10px' }}>
+      <div style={{ flex: 1, overflowY: 'auto', fontFamily: 'monospace', fontSize: '0.8rem', display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: '10px', position: 'relative', zIndex: 1 }}>
         {history.map((line, i) => (
           <div key={i} style={{ 
             color: line.type === 'user' ? '#fff' : line.type === 'system' ? '#00f3ff' : '#94a3b8',
-            marginBottom: '4px'
+            marginBottom: '4px',
+            textShadow: line.type === 'system' ? '0 0 5px rgba(0,243,255,0.5)' : 'none'
           }}>
             {line.type === 'response' || line.type === 'system' ? (
-              line.text.split('').map((char, index) => (
-                <motion.span
-                  key={`${i}-${index}`}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.05, delay: index * 0.02 }}
-                >
-                  {char}
-                </motion.span>
-              ))
+              <Typewriter text={line.text} delay={15} />
             ) : (
               line.text
             )}
@@ -118,8 +148,8 @@ const Terminal = ({ onNavigate }) => {
         <div ref={bottomRef} />
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', fontFamily: 'monospace', fontSize: '0.8rem' }}>
-        <span style={{ color: '#00f3ff', marginRight: '8px' }}>{'>'}</span>
+      <div style={{ display: 'flex', alignItems: 'center', fontFamily: 'monospace', fontSize: '0.8rem', position: 'relative', zIndex: 1 }}>
+        <span style={{ color: '#00f3ff', marginRight: '8px' }}>$</span>
         <input 
           type="text" 
           value={input}
@@ -140,6 +170,19 @@ const Terminal = ({ onNavigate }) => {
           autoFocus
         />
       </div>
+
+      <style>{`
+        @keyframes terminalFlicker {
+          0% { opacity: 0.45; }
+          5% { opacity: 0.55; }
+          10% { opacity: 0.48; }
+          15% { opacity: 0.52; }
+          20% { opacity: 0.45; }
+          25% { opacity: 0.55; }
+          30% { opacity: 0.48; }
+          100% { opacity: 0.5; }
+        }
+      `}</style>
     </div>
   )
 }

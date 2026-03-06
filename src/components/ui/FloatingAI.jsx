@@ -119,10 +119,24 @@ const FloatingAI = ({ onNavigate }) => {
               gap: '0.75rem',
               background: 'rgba(0, 243, 255, 0.05)'
             }}>
-              <Cpu size={20} color="#00f3ff" />
+              <div style={{ position: 'relative', width: 24, height: 24 }}>
+                <Cpu size={20} color="#00f3ff" style={{ position: 'relative', zIndex: 2 }} />
+                <motion.div 
+                   animate={{ scale: [1, 1.5, 1], opacity: [0.2, 0.5, 0.2] }}
+                   transition={{ duration: 2, repeat: Infinity }}
+                   style={{ 
+                     position: 'absolute', top: -2, left: -2, width: 24, height: 24, 
+                     borderRadius: '50%', background: '#00f3ff', filter: 'blur(8px)', zIndex: 1 
+                   }} 
+                />
+              </div>
               <span className="holo-text" style={{ fontSize: '1rem', fontWeight: 'bold' }}>SI AI Core</span>
               <span style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '5px', fontSize: '0.7rem', color: '#00ff41' }}>
-                <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#00ff41', boxShadow: '0 0 5px #00ff41' }} />
+                <motion.span 
+                  animate={{ scale: [1, 1.3, 1] }} 
+                  transition={{ duration: 1, repeat: Infinity }}
+                  style={{ width: 6, height: 6, borderRadius: '50%', background: '#00ff41', boxShadow: '0 0 5px #00ff41' }} 
+                />
                 ONLINE
               </span>
             </div>

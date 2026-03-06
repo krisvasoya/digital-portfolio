@@ -25,7 +25,7 @@ const ParticleLayer = ({ count, size, color, opacity, speedModifier = 1, radius 
     return pos
   }, [count, radius])
 
-  useFrame((state, delta) => {
+  useFrame((state) => {
     if (!ref.current) return
     
     const t = state.clock.getElapsedTime() * speedModifier

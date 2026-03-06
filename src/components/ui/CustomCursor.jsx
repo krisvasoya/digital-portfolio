@@ -6,20 +6,21 @@ import { audioSys } from '../../utils/AudioSystem';
 const CustomCursor = () => {
   const cursorRef = useRef(null);
   const blobRef = useRef(null);
+  const ringRef = useRef(null);
   const [isHovering, setIsHovering] = useState(false);
   const [isClicking, setIsClicking] = useState(false);
   
   // Mouse tracking with velocity for liquid stretching
-  const mouse = { x: 0, y: 0 };
-  const pos = { x: 0, y: 0 };
-  const vel = { x: 0, y: 0 };
+  const mouse = useRef({ x: 0, y: 0 });
+  const pos = useRef({ x: 0, y: 0 });
+  const vel = useRef({ x: 0, y: 0 });
   
   useEffect(() => {
     document.body.style.cursor = 'none';
 
     const onMouseMove = (e) => {
-      mouse.x = e.clientX;
-      mouse.y = e.clientY;
+      mouse.current.x = e.clientX;
+      mouse.current.y = e.clientY;
 
       // Hover detection
       const target = e.target;
@@ -40,16 +41,16 @@ const CustomCursor = () => {
     const render = () => {
       // Lagging position for smoothness
       const dt = 0.15;
-      pos.x += (mouse.x - pos.x) * dt;
-      pos.y += (mouse.y - pos.y) * dt;
+      pos.current.x += (mouse.current.x - pos.current.x) * dt;
+      pos.current.y += (mouse.current.y - pos.current.y) * dt;
       
       // Velocity calculation
-      vel.x = mouse.x - pos.x;
-      vel.y = mouse.y - pos.y;
-      const speed = Math.sqrt(vel.x * vel.x + vel.y * vel.y);
+      vel.current.x = mouse.current.x - pos.current.x;
+      vel.current.y = mouse.current.y - pos.current.y;
+      const speed = Math.sqrt(vel.current.x * vel.current.x + vel.current.y * vel.current.y);
       
       // Rotation based on movement direction
-      const angle = Math.atan2(vel.y, vel.x) * (180 / Math.PI);
+      const angle = Math.atan2(vel.current.y, vel.current.x) * (180 / Math.PI);
       
       // Stretch based on speed
       const stretch = Math.min(speed * 0.01, 0.8);
@@ -62,8 +63,17 @@ const CustomCursor = () => {
 
       if (cursorRef.current) {
         gsap.set(cursorRef.current, {
-          x: pos.x,
-          y: pos.y,
+          x: pos.current.x,
+          y: pos.current.y,
+        });
+      }
+
+      if (ringRef.current) {
+        gsap.set(ringRef.current, {
+          x: pos.current.x,
+          y: pos.current.y,
+          scale: isHovering ? 1.5 : 1,
+          opacity: isHovering ? 0.3 : 0.6,
         });
       }
 
@@ -92,7 +102,8 @@ const CustomCursor = () => {
       window.removeEventListener('mouseup', onMouseUp);
       cancelAnimationFrame(animationId);
     };
-  }, [isHovering]);
+  }, [isHovering]); // isHovering is back in dependencies to reflect the scale/opacity changes in the loop correctly if needed, but the loop is self-sustaining. Actually better to keep it to ensure the loop closure sees the latest isHovering.
+
 
   return (
     <>
@@ -138,14 +149,8 @@ const CustomCursor = () => {
         </div>
 
       {/* Secondary Trailing Ring */}
-      <motion.div
-        animate={{
-          x: pos.x,
-          y: pos.y,
-          scale: isHovering ? 1.5 : 1,
-          opacity: isHovering ? 0.3 : 0.6
-        }}
-        transition={{ type: "spring", stiffness: 250, damping: 20, mass: 0.5 }}
+      <div
+        ref={ringRef}
         style={{
           position: 'fixed',
           top: 0,

@@ -75,10 +75,29 @@ const CommandPalette = ({ onNavigate, onToggleAudio }) => {
           onClick={() => setIsOpen(false)}
         >
           <motion.div
-            initial={{ scale: 0.95, opacity: 0, y: -20 }}
-            animate={{ scale: 1, opacity: 1, y: 0 }}
-            exit={{ scale: 0.95, opacity: 0, y: -20 }}
-            transition={{ duration: 0.2 }}
+            initial={{ 
+              scale: 1.1, 
+              opacity: 0, 
+              y: 20,
+              filter: 'blur(10px) brightness(2)'
+            }}
+            animate={{ 
+              scale: 1, 
+              opacity: 1, 
+              y: 0,
+              filter: 'blur(0px) brightness(1)'
+            }}
+            exit={{ 
+              scale: 0.95, 
+              opacity: 0, 
+              y: -20,
+              filter: 'blur(5px)'
+            }}
+            transition={{ 
+              type: "spring",
+              stiffness: 300,
+              damping: 25
+            }}
             onClick={(e) => e.stopPropagation()}
             style={{
               width: '100%',
