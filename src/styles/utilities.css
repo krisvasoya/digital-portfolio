@@ -11,8 +11,8 @@
 }
 
 .glass-panel:hover {
-  border-color: rgba(0, 243, 255, 0.3);
-  box-shadow: 0 0 15px rgba(0, 243, 255, 0.1);
+  border-color: rgba(0, 243, 255, 0.5);
+  box-shadow: 0 0 20px rgba(0, 243, 255, 0.2), inset 0 0 10px rgba(0, 243, 255, 0.1);
 }
 
 /* Holographic Text */
@@ -27,8 +27,9 @@
 .holo-header {
   font-size: 1.5rem;
   font-weight: 700;
-  background: linear-gradient(90deg, var(--accent-cyan), var(--accent-blue));
+  background: linear-gradient(90deg, #0044ff, #00f3ff, #ffffff);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   margin-bottom: 1rem;
 }
@@ -66,8 +67,17 @@
 }
 
 .cyber-btn:hover {
-  background: rgba(0, 243, 255, 0.1);
-  box-shadow: 0 0 15px rgba(0, 243, 255, 0.3);
+  background: linear-gradient(90deg, rgba(0,102,255,0.2), rgba(0,243,255,0.2));
+  box-shadow: 0 0 15px rgba(0, 243, 255, 0.5), 0 0 30px rgba(0, 102, 255, 0.3);
+  border-color: #00f3ff;
+}
+
+.cyber-btn.active {
+  background: rgba(0, 243, 255, 0.15);
+  border-color: #00f3ff;
+  color: #ffffff;
+  box-shadow: 0 0 20px rgba(0, 243, 255, 0.5), inset 0 0 10px rgba(0, 243, 255, 0.2);
+  text-shadow: 0 0 8px #ffffff, 0 0 15px #00f3ff;
 }
 
 .cyber-btn::before {
@@ -83,4 +93,72 @@
 
 .cyber-btn:hover::before {
   left: 100%;
+}
+
+/* Data Stream Background */
+.data-stream-bg {
+  position: relative;
+}
+
+.data-stream-bg::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.03;
+  pointer-events: none;
+  background-image: linear-gradient(0deg, transparent 24%, rgba(0, 243, 255, 0.8) 25%, rgba(0, 243, 255, 0.8) 26%, transparent 27%, transparent 74%, rgba(0, 243, 255, 0.8) 75%, rgba(0, 243, 255, 0.8) 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, rgba(0, 243, 255, 0.8) 25%, rgba(0, 243, 255, 0.8) 26%, transparent 27%, transparent 74%, rgba(0, 243, 255, 0.8) 75%, rgba(0, 243, 255, 0.8) 76%, transparent 77%, transparent);
+  background-size: 3rem 3rem;
+  animation: gridMove 20s linear infinite;
+  z-index: -1;
+}
+
+@keyframes gridMove {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(3rem); }
+}
+
+/* CRT Scanlines */
+.scanlines {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 999;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0),
+    rgba(255, 255, 255, 0) 50%,
+    rgba(0, 0, 0, 0.1) 50%,
+    rgba(0, 0, 0, 0.1)
+  );
+  background-size: 100% 4px;
+  opacity: 0.3;
+}
+
+.scanlines::before {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+  z-index: 2;
+  background-size: 100% 2px, 3px 100%;
+  pointer-events: none;
+}
+
+@keyframes scroll {
+  0% { background-position: 0 0; }
+  100% { background-position: 0 4px; }
+}
+
+.scanlines {
+  animation: scroll 0.5s linear infinite;
 }

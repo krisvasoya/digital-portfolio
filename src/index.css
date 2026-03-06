@@ -66,3 +66,60 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+/* Theme Variables */
+:root {
+  --color-bg-base: #000000;
+  --color-primary: #00f3ff;
+  --color-secondary: #0066ff;
+  --color-accent: #00ff41;
+  --color-text: #e2e8f0;
+  --color-text-muted: #94a3b8;
+  --panel-bg: rgba(5, 8, 16, 0.6);
+  --panel-border: rgba(0, 243, 255, 0.2);
+}
+
+.theme-solar {
+  --color-bg-base: #f0f4f8;
+  --color-primary: #ff6b6b;
+  --color-secondary: #ff8e53;
+  --color-accent: #ffd166;
+  --color-text: #1e293b;
+  --color-text-muted: #475569;
+  --panel-bg: rgba(255, 255, 255, 0.7);
+  --panel-border: rgba(255, 107, 107, 0.3);
+}
+
+/* Applying Variables */
+.glass-panel {
+  background: var(--panel-bg) !important;
+  border-color: var(--panel-border) !important;
+}
+
+.holo-header, .holo-text {
+  color: var(--color-primary) !important;
+  text-shadow: 0 0 10px var(--color-primary) !important;
+  animation: pulseColor 10s infinite alternate linear;
+}
+
+@keyframes pulseColor {
+  0% { filter: hue-rotate(0deg); }
+  100% { filter: hue-rotate(15deg); }
+}
+
+.cyber-btn {
+  color: var(--color-primary) !important;
+  border-color: var(--panel-border) !important;
+}
+
+.cyber-btn:hover {
+  background: rgba(var(--color-primary), 0.1) !important;
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 15px rgba(var(--color-primary), 0.4) !important;
+}
+
+body {
+  background-color: var(--color-bg-base) !important;
+  color: var(--color-text) !important;
+  transition: background-color 0.5s ease, color 0.5s ease;
+}
